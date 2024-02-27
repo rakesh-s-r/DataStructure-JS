@@ -54,10 +54,24 @@ class BinarySearchTree {
     }
   }
 
+  // Without using recursion.
+  // search(val, root) {
+  //   if (!root) return false;
+  //   let cur = root;
+  //   while (cur) {
+  //     console.log(val)
+  //     if (cur.val === val) return true;
+  //     else if (val < cur.val) cur = cur.left;
+  //     else cur = cur.right;
+  //   }
+  //   return false;
+  // }
+
   // DFS: 1
   preOrder(root) {
+    // root, all left, all right
     if (root) {
-      console.log(root.value);
+      console.log("pre order traversal", root.value);
       this.preOrder(root.left);
       this.preOrder(root.right);
     }
@@ -65,15 +79,17 @@ class BinarySearchTree {
 
   // DFS: 2
   inOrder(root) {
+    //  all left, root, all right
     if (root) {
       this.inOrder(root.left);
-      console.log(root.value);
+      console.log("in order traversal", root.value);
       this.inOrder(root.right);
     }
   }
 
   // DFS: 3
   postOrder(root) {
+    //  all left, all right, root
     if (root) {
       this.postOrder(root.left);
       this.postOrder(root.right);
@@ -99,12 +115,73 @@ class BinarySearchTree {
     }
   }
 
+  // find level
+  heightOfTree() {
+    let depth = 0;
+    if (!this.root) return depth;
+    const queue = [this.root];
+    while (queue.length) {
+      let len = queue.length;
+      for (let i = 0; i < len; i++) {
+        const node = queue.shift();
+        if (node.left) queue.push(node.left);
+        if (node.right) queue.push(node.right);
+      }
+      depth++;
+    }
+    return depth;
+  }
+
+  // Alternative to find height maximum height connected
+  // maxHeight(root) {
+  //   if (!root) return 0;
+  //   let leftHeight = this.maxHeight(root.left);
+  //   let rightHeight = this.maxHeight(root.right);
+  //   return Math.max(leftHeight, rightHeight) + 1;
+  // }
+
+  //Find longest diameter : nothing but longest path connected
+  diameterOfBinaryTree(root) {
+    let max = 0;
+    const bfs = (root) => {
+      if (!root) return 0;
+      const leftT = bfs(root.left);
+      const rightT = bfs(root.right);
+      max = Math.max(leftT + rightT, max);
+      return Math.max(leftT, rightT) + 1;
+    };
+    bfs(root);
+    return max;
+  }
+
+  // Find 2 trees are same;
+  isSameTree(p, q) {
+    if (!p && !q) return true;
+    if (!p || !q || p.val !== q.val) return false;
+    return this.isSameTree(p.left, q.left) && this.isSameTree(p.right, q.right);
+  }
+
+  // if one tree is sub tree of another
+  isSubtree = function (root, subRoot) {
+    if (!subRoot) return true;
+    if (!root) return false;
+    if (isSameTree(root, subRoot)) return true;
+    return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);
+  };
+
   min(root) {
     if (!root.left) {
       return root.value;
     } else {
       return this.min(root.left);
     }
+  }
+
+  min(root) {
+    while (root.left) {
+      root = root.left;
+    }
+    return root.val;
   }
 
   max(root) {
@@ -145,10 +222,14 @@ class BinarySearchTree {
 
 const bst = new BinarySearchTree();
 // console.log(bst.isEmpty());
-bst.insert(10);
 bst.insert(5);
-bst.insert(15);
 bst.insert(3);
+bst.insert(6);
+bst.insert(2);
+bst.insert(4);
+bst.insert(null);
+bst.insert(7);
+
 // bst.insert(7);
 // console.log(bst.search(bst.root, 10));
 // console.log(bst.search(bst.root, 5));
@@ -159,5 +240,7 @@ bst.insert(3);
 // bst.levelOrder();
 // console.log(bst.min(bst.root));
 // console.log(bst.max(bst.root));
-bst.delete(10);
-bst.levelOrder();
+// bst.delete(5);
+// bst.preOrder(bst.root);
+bst.postOrder(bst.root);
+// bst.levelOrder();

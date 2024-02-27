@@ -182,6 +182,30 @@ class LinkedList {
     }
     this.head = prev;
   }
+
+  // sum of twin [6,5, 2, 1] => max 7 bcz: 5+2 = 6+1
+  pairSum = function (head) {
+    let fast = head;
+    let slow = head;
+    let prev = null;
+
+    while (fast && fast.next) {
+      fast = fast.next.next;
+      let nextNode = slow.next;
+      slow.next = prev;
+      prev = slow;
+      slow = nextNode;
+    }
+    let res = 0;
+    while (slow) {
+      res = Math.max(res, prev.val + slow.val);
+      prev = prev.next;
+      slow = slow.next;
+    }
+    return res;
+  };
+
+  findMidOfLinkedList() {}
 }
 
 const l = new LinkedList();
@@ -189,12 +213,12 @@ console.log(l.isEmpty());
 l.append(10);
 l.append(20);
 l.append(30);
-l.insertAtPosition(15, 1);
+// l.insertAtPosition(15, 1);
 console.log(l.print());
-// l.removeAtIndex(0);
+l.removeAtIndex(0);
 console.log(l.print());
-console.log(l.search(20));
-console.log(l.reverse(20));
-console.log(l.print());
+// console.log(l.search(20));
+// console.log(l.reverse(20));
+// console.log(l.print());
 
 module.exports = LinkedList;
